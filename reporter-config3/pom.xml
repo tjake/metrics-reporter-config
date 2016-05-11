@@ -49,6 +49,12 @@
             <version>${dep.metrics3.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.readytalk</groupId>
+            <artifactId>metrics3-statsd</artifactId>
+            <version>4.1.2</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
 </project>

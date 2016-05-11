@@ -104,6 +104,10 @@
       <id>clojars.org</id>
       <url>http://clojars.org/repo</url>
     </repository>
+    <repository>
+      <id>bintray</id>
+      <url>https://dl.bintray.com/readytalk/maven/</url>
+    </repository>
   </repositories>
 
   <scm>

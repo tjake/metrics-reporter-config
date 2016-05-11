@@ -45,6 +45,8 @@ public class ReporterConfig extends AbstractReporterConfig
     private List<GraphiteReporterConfig> graphite;
     @Valid
     private List<RiemannReporterConfig> riemann;
+    @Valid
+    private List<StatsdReporterConfig> statsd;
 
     public List<ConsoleReporterConfig> getConsole()
     {
@@ -94,6 +96,16 @@ public class ReporterConfig extends AbstractReporterConfig
     public void setRiemann(List<RiemannReporterConfig> riemann)
     {
         this.riemann = riemann;
+    }
+
+    public List<StatsdReporterConfig> getStatsd()
+    {
+        return statsd;
+    }
+
+    public void setStatsd(List<StatsdReporterConfig> statsd)
+    {
+        this.statsd = statsd;
     }
 
     public boolean enableConsole(MetricRegistry registry)
@@ -186,6 +198,24 @@ public class ReporterConfig extends AbstractReporterConfig
         return !failures;
     }
 
+    public boolean enableStatsd(MetricRegistry registry)
+    {
+        boolean failures = false;
+        if (statsd == null)
+        {
+            log.debug("Asked to enable statd, but it was not configured");
+            return false;
+        }
+        for (StatsdReporterConfig statsdConfig : statsd)
+        {
+            if (!statsdConfig.enable(registry))
+            {
+                failures = true;
+            }
+        }
+        return !failures;
+    }
+
     public boolean enableAll(MetricRegistry registry)
     {
         boolean enabled = false;
@@ -224,6 +254,13 @@ public class ReporterConfig extends AbstractReporterConfig
                 enabled = true;
             }
         }
+        if (statsd != null)
+        {
+            if (enableStatsd(registry))
+            {
+                enabled = true;
+            }
+        }
         if (!enabled)
         {
             log.warn("No reporters were succesfully enabled");
@@ -246,6 +283,7 @@ public class ReporterConfig extends AbstractReporterConfig
         report(ganglia);
         report(graphite);
         report(riemann);
+        report(statsd);
     }
 
     public static ReporterConfig loadFromFileAndValidate(String fileName) throws IOException
